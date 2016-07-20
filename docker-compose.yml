@@ -1,0 +1,40 @@
+
+# Mysql 5.7
+mysql:
+  image: codecasts/pier-mysql:5.7
+  container_name: jobs-mysql
+  ports:
+   - "3306:3306"
+  environment:
+    - MYSQL_ROOT_PASSWORD=jobs
+    - MYSQL_DATABASE=jobs
+    - MYSQL_USER=jobs
+    - MYSQL_PASSWORD=jobs
+
+# Redis
+cache:
+  image: codecasts/pier-redis:latest
+  container_name: jobs-redis
+  ports:
+    - "6379:6379"
+
+# Nginx
+nginx:
+  image: codecasts/pier-nginx:latest
+  container_name: jobs-nginx
+  volumes:
+      - .:/var/www/app
+  ports:
+   - "80:80"
+  links:
+   - php
+
+# PHP
+php:
+  image: codecasts/pier-php:7.0
+  container_name: jobs-php
+  volumes:
+    - .:/var/www/app
+  links:
+    - mysql
+    - cache
